@@ -1,14 +1,14 @@
 const express = require("express");
+const bodyParser = require('body-parser')
 const app = express();
-const cors = require('cors');
-const router = require('./routes/index.routing');
-require('dotenv').config();
-require('./database/database');
+
 const port = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
-app.use(router);
+// app.use = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false}));
+require('./controller/authController')(app);
+require('./controller/projectController')(app);
 
 app.listen(port, () => {
     console.log('server is running on port: ', port);
