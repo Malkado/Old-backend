@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authConfig = require('../config/auth.json');
-const User = require('../models/PersonUser');
+const User = require('../models/AuthUser');
 const router = express.Router();
 
 // Função que gerencia a criação dos tokens aledatorios

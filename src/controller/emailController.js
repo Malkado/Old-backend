@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const User = require('../models/PersonUser');
+const User = require('../models/AuthUser');
 const response = require('../helper/response-helper');
 
 const transporter = nodemailer.createTransport({
