@@ -2,29 +2,29 @@ const mongoose = require('../database/database');
 const bcrypt = require('bcryptjs')
 
 const PersonUserSchema = new mongoose.Schema({
-    name:{
+    name: {
         type: String,
         require: true,
     },
-    email:{
+    email: {
         type: String,
         unique: true,
         require: true,
         lowercase: true,
     },
-    password:{
+    password: {
         type: String,
         require: true,
         select: false,
     },
-    createAt:{
+    createAt: {
         type: Date,
         default: Date.now,
     }
 });
 
 // Irá encriptar o password
-PersonUserSchema.pre('save', async function(next){
+PersonUserSchema.pre('save', async function (next) {
     const hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
 
