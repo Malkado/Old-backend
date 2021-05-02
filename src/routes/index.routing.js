@@ -8,7 +8,8 @@ router.get("/", function (req, res) {
 });
 
 //Email
-router.get('/confirmEmail', authMiddleware, emailController.sendConfirmEmail);
+router.get('/sendConfirmEmail', authMiddleware, emailController.sendConfirmEmail);
+router.get('/confirmEmail', authMiddleware, emailController.confirmEmail);
 
 
 

@@ -31,11 +31,11 @@ const validationAccontSchema = new mongoose.Schema({
 });
 
 // // Irá encriptar o password
-validationAccontSchema.pre('save', async function (next) {
-    const hash = await bcrypt.hash(this.code, 10);
-    this.code = hash;
-    next();
-});
+// validationAccontSchema.pre('save', async function (next) {
+//     const hash = await bcrypt.hash(this.code, 10);
+//     this.code = hash;
+//     next();
+// });
 
 const validationAccont = mongoose.model('ValidationAccont', validationAccontSchema);
 
