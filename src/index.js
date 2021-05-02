@@ -5,7 +5,7 @@ const router = require('./routes/index.routing');
 require('dotenv').config();
 require('./database/database');
 const port = process.env.PORT || 3000;
-
+//aplicação
 app.use(cors());
 app.use(express.json());
 app.use(router);
