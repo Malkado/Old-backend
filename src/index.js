@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));
 // require('./controller/authController')(app);
 require('./controller/projectController')(app);
-
+// 
 app.use(routes);
 app.listen(port, () => {
     console.log('server is running on port: ', port);
