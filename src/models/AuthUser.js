@@ -2,10 +2,6 @@ const mongoose = require('../database/database');
 const bcrypt = require('bcryptjs')
 
 const AuthUserSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        require: true,
-    },
     email: {
         type: String,
         unique: true,
@@ -18,6 +14,10 @@ const AuthUserSchema = new mongoose.Schema({
         select: false,
     },
     createAt: {
+        type: Date,
+        default: Date.now,
+    },
+    updateAt: {
         type: Date,
         default: Date.now,
     }
