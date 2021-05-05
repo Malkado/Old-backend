@@ -4,6 +4,7 @@ const authMiddleware = require('../middleware/auth');
 const emailController = require('../controller/emailController');
 const authController = require('../controller/authController');
 const personController = require('../controller/personController');
+const associationController = require('../controller/AssociationController');
 router.get("/", function (req, res) {
     res.json({ message: 'server is running!' });
 });
@@ -20,4 +21,5 @@ router.post('/authenticate', authController.authenticate)
 
 //Register
 router.post('/registerPerson', personController.registerPerson)
+router.post('/registerAssociation', associationController.registerAssociation)
 module.exports = router;

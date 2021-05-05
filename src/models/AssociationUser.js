@@ -1,25 +1,16 @@
 const mongoose = require('../database/database');
 
-const PersonUserSchema = new mongoose.Schema({
+const AssociationUserSchema = new mongoose.Schema({
     sequence_id: {
         type: Number,
         require: true,
     },
-    name: {
+    fantasy_name: {
         type: String,
         require: true,
         min: 1,
     },
-    lastName: {
-        type: String,
-        require: true,
-        min: 1,
-    },
-    birthDate: {
-        type: String,
-        require: true,
-    },
-    CPF_CNPJ: {
+    CNPJ: {
         type: String,
         require: true,
         unique: true,
@@ -37,12 +28,12 @@ const PersonUserSchema = new mongoose.Schema({
 });
 
 // Irá criar o valor de id sequencial
-PersonUserSchema.pre('save', async function (next) {
-    const allSize = await PersonUser.count() + 1;
+AssociationUserSchema.pre('save', async function (next) {
+    const allSize = await AssociationUser.count() + 1;
     this.sequence_id = allSize;
     next();
 });
 
-const PersonUser = mongoose.model('PersonUser', PersonUserSchema);
+const AssociationUser = mongoose.model('AssociationUser', AssociationUserSchema);
 
-module.exports = PersonUser;
+module.exports = AssociationUser;
