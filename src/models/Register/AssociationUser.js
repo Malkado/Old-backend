@@ -1,4 +1,4 @@
-const mongoose = require('../database/database');
+const mongoose = require('../../database/database');
 
 const AssociationUserSchema = new mongoose.Schema({
     sequence_id: {
