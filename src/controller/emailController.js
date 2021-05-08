@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const User = require('../models/AuthUser');
 const response = require('../helper/response-helper');
-
+const emailContext = require('../helper/email/email');
 const validationModel = require('../models/validationAccont');
 
 const transporter = nodemailer.createTransport({
@@ -52,8 +52,8 @@ module.exports = {
                 if (saveCode) {
                     const status = 200;
                     const message = 'Código Enviado com sucesso.';
-                    console.log(sendEmail(email, saveCode.code, message, status,res));
-                     sendEmail(email, saveCode.code, message, status, res);
+                    console.log(sendEmail(email, saveCode.code, message, status, res));
+                    sendEmail(email, saveCode.code, message, status, res);
                 } else {
                     const status = 403;
                     const message = 'Falha ao gerar o código.';
@@ -116,21 +116,22 @@ module.exports = {
 
 
 }
-function sendEmail(email, codigo, message, status,res) {
-   
+function sendEmail(email, codigo, message, status, res) {
+console.log(emailContext.setCodeInEmail(codigo,'luiz'));
+    const html = '<h1>oi</h1>';
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
         subject: 'Código de confirmação!',
-        text: codigo
+        html: html
     };
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             transporter.close();
-            return res.json(response.responseMensage([],'Falha no envio do e-mail.', 500));
+            return res.json(response.responseMensage([], 'Falha no envio do e-mail.', 500));
         } else {
             console.log('Email enviado: ' + info.response);
-             return res.json(response.responseMensage([], message, status));
+            return res.json(response.responseMensage([], message, status));
         }
     });
 }
