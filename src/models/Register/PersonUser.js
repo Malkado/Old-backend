@@ -1,11 +1,11 @@
-const mongoose = require('../database/database');
+const mongoose = require('../../database/database');
 
 const PersonUserSchema = new mongoose.Schema({
     sequence_id: {
         type: Number,
         require: true,
     },
-    name: {
+    firstName: {
         type: String,
         require: true,
         min: 1,

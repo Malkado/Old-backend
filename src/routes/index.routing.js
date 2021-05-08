@@ -3,8 +3,8 @@ const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const emailController = require('../controller/emailController');
 const authController = require('../controller/authController');
-const personController = require('../controller/personController');
-const associationController = require('../controller/AssociationController');
+const registerController = require('../controller/registerController');
+const addressController = require('../controller/addressController');
 router.get("/", function (req, res) {
     res.json({ message: 'server is running!' });
 });
@@ -13,13 +13,12 @@ router.get("/", function (req, res) {
 router.get('/sendConfirmEmail', authMiddleware, emailController.sendConfirmEmail);
 router.get('/confirmEmail', authMiddleware, emailController.confirmEmail);
 
-
-
 //Auth
 router.post('/register', authController.register);
-router.post('/authenticate', authController.authenticate)
+router.post('/authenticate', authController.authenticate);
 
 //Register
-router.post('/registerPerson', personController.registerPerson)
-router.post('/registerAssociation', associationController.registerAssociation)
+router.post('/registerPerson', registerController.registerPerson);
+router.post('/registerAssociation', registerController.registerAssociation);
+router.post('/registerAddress', addressController.registerAddress);
 module.exports = router;
