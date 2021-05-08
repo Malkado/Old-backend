@@ -13,8 +13,6 @@ router.get("/", function (req, res) {
 router.get('/sendConfirmEmail', authMiddleware, emailController.sendConfirmEmail);
 router.get('/confirmEmail', authMiddleware, emailController.confirmEmail);
 
-
-
 //Auth
 router.post('/register', authController.register);
 router.post('/authenticate', authController.authenticate);

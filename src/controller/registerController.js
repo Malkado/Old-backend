@@ -22,10 +22,11 @@ module.exports = {
     async registerAssociation(req, res) {
         try {
             const association = await Association.create(req.body);
-
+            const lastId = association.sequence_id;
             association.sequence_id = undefined;
-
-            return res.status(201).send({ message: 'Associação adicionada com sucesso!' })
+            const status = 201;
+            const message = 'Associação adicionada com sucesso!';
+            return res.json(response.responseMensage([{ id_user: lastId }], message, status));
         } catch (err) {
             return res.status(400).send({ error: 'Erro no registrado da associação!' })
         }

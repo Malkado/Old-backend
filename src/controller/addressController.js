@@ -1,7 +1,5 @@
 const express = require('express');
 const Address = require('../models/Address/Address');
-const Person = require('../models/Register/PersonUser');
-const Association = require('../models/Register/AssociationUser');
 const router = express.Router();
 
 module.exports = {

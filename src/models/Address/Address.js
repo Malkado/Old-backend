@@ -56,9 +56,7 @@ const AddressSchema = new mongoose.Schema({
 // Irá criar o valor de id sequencial
 AddressSchema.pre('save', async function (next) {
     const allSize = await Address.count() + 1;
-    // const lasdId = await mongoose.connection.collection("personusers").count();
     this.sequence_id = allSize;
-    // this.id_user = lasdId;
     next();
 });
 

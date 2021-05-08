@@ -13,6 +13,14 @@ const AuthUserSchema = new mongoose.Schema({
         require: true,
         select: false,
     },
+    id_user: {
+        type: Number,
+        require: true,
+    },
+    type_user: {
+        type: Number,
+        require: true,
+    },
     createAt: {
         type: Date,
         default: Date.now,
