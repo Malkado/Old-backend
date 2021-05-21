@@ -25,7 +25,7 @@ const imageUserSchema = new mongoose.Schema({
 });
 
 imageUserSchema.pre('save', async function (next) {
-    const allSize = await ImageUser.count() + 1;
+    const allSize = await userImage.count() + 1;
     this.sequence_id = allSize;
     next();
 });

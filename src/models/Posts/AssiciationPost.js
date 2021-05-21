@@ -12,9 +12,12 @@ const AssociationPostSchema = new mongoose.Schema({
     description: {
         type: String
     },
-    image_sequence_id:{
-       type: Number,
-        require: true,  
+    image: {
+        type: String
+    },
+    sequence_id: {
+        type: Number,
+        require: true,
     },
     createAt: {
         type: Date,
@@ -24,9 +27,13 @@ const AssociationPostSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     }
-    
-});
 
+});
+AssociationPostSchema.pre('save', async function (next) {
+    const allSize = await AssociationPost.count() + 1;
+    this.sequence_id = allSize;
+    next();
+});
 
 
 const AssociationPost = mongoose.model('AssociationPost', AssociationPostSchema);

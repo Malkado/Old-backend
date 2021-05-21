@@ -1,50 +1,72 @@
 const associationModel = require('../../models/Register/AssociationUser');
-const postModel = require('../../models/Posts/AssiciationPost');
 const associationPostModel = require('../../models/Posts/AssiciationPost');
 const AuthModel = require('../../models/AuthUser');
-const imageController = require('./imageController');
+const response = require('../../helper/response-helper');
+
 module.exports = {
 
     async createPost(req, res) {
         const { userId } = req;
         const { img, description } = req.body;
-        console.log(req.body, userId);
         if ((!img || !description)) {
-            return res.send('404- parâmetros inválidos.');//404- parâmetros inválidos.
+            const status = 400;
+            const message = 'Parâmetros inválidos.';
+            return res.json(response.responseMensage([], message, status));
         }
 
         const user = await AuthModel.findById(userId);
         if (!user) {
-            return res.send('usuário não encontrado.');
+            const status = 404;
+            const message = 'Usuário não encontrado.';
+            return res.json(response.responseMensage([], message, status));
         }
         const association = await associationModel.find({ sequence_id: user.id_user });
-        console.log(association)
         if (!association) {
-            res.send('Somente associação pode criar postagem '); // Somente associação pode criar postagem 
+            const status = 403;
+            const message = 'Somente associação pode criar postagem.';
+            return res.json(response.responseMensage([], message, status));
         }
-        
 
-        const imageId = imageController.writeImagePost(img);
-        console.log(imageId);
-        if (!imageId) {
-            return res.send('erro ao salvar imagem'); //erro ao salvar imagem;
-        }
         const body = {
             'association_sequence_id': association[0].sequence_id,
             'association_name': association[0].fantasy_name,
             'description': association[0].fantasy_name,
-            'image_sequence_id': imageId
+            'image': img
         };
 
         const publishPost = await associationPostModel.create(body);
 
         if (!publishPost) {
-            return res.send('erro ao criar postagem');
+            const status = 500;
+            const message = 'Falha ao criar a postagem.';
+            return res.json(response.responseMensage([], message, status));
         }
 
-        return res.json({ messege: 'função executada com sucesso', publishPost });
+        const status = 201;
+        const message = 'Função executada com sucesso.';
+        return res.json(response.responseMensage([], message, status));
     },
     async listPost(req, res) {
+        const { userId } = req;
+        const { lastId } = req.body;
+
+
+        const user = await AuthModel.findById(userId);
+        if (!user) {
+            const status = 404;
+            const message = 'Usuário não encontrado.';
+            return res.json(response.responseMensage([], message, status));
+        }
+
+        const listPost = !lastId ? await associationPostModel.find({}).limit(5) : await associationPostModel.find({}).sort("sequence_id").skip(5).limit(5);
+        if (!listPost) {
+            const status = 500;
+            const message = 'Falha ao listar postagens.';
+            return res.json(response.responseMensage([], message, status));
+        }
+        const status = 200;
+        const message = 'Função executada com sucesso.';
+        return res.json(response.responseMensage(listPost, message, status));
 
     }
 }

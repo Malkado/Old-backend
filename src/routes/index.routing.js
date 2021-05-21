@@ -26,6 +26,7 @@ router.post('/registerAddress', addressController.registerAddress);
 
 //Postagem 
 router.post('/createPost',authMiddleware, postController.createPost);
+router.post('/posts',authMiddleware, postController.listPost);
 
 
 module.exports = router;
