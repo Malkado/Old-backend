@@ -13,7 +13,9 @@ router.get("/", function (req, res) {
 //Email
 router.get('/sendConfirmEmail', authMiddleware, emailController.sendConfirmEmail);
 router.get('/confirmEmail', authMiddleware, emailController.confirmEmail);
-
+//Forgot Password
+router.get('/forgotPassword', authMiddleware, emailController.forgotPassword);
+router.get('/confirmPassword', authMiddleware, emailController.confirmPassword);
 //Auth
 router.post('/register', authController.register);
 router.post('/authenticate', authController.authenticate);
