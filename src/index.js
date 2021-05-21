@@ -1,13 +1,11 @@
 const express = require("express");
 const bodyParser = require('body-parser')
-const app = express();
 const routes = require('./routes/index.routing');
-const authController = require('./controller/authController');
-require('dotenv').config();
+const cors = require('cors');
+const app = express();
 const port = process.env.PORT || 3000;
-var cors = require('cors')
+require('dotenv').config();
 
-app.use(cors())
 
 app.use((req, res, next) => {
     //Qual site tem permissão de realizar a conexão, no exemplo abaixo está o "*" indicando que qualquer site pode fazer a conexão
