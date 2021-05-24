@@ -3,6 +3,7 @@ const Person = require('../../models/Register/PersonUser');
 const Association = require('../../models/Register/AssociationUser');
 const response = require('../../helper/response-helper');
 const router = express.Router();
+const Address = require('../../models/Address/Address');
 
 module.exports = {
 
@@ -53,4 +54,27 @@ module.exports = {
             return res.status(400).send({ error: 'Erro ao remover Associação' })
         }
     },
+
+    async findAssociationByState(req, res) {
+        try {
+            var arr = [];
+            const { state } = req.body;
+            await Address.find({}, function (err, docs) {
+                docs.forEach(element => {
+                    if (element['state'] == state) {
+                        arr.push(element['id_user']);
+                    }
+                });
+                Association.find({ sequence_id: { $in: arr } })
+                    .then(docs => {
+                        return res.json(docs);
+                    })
+                    .catch(err => {
+                        return res.status(400).send({ error: 'Erro ao retornar a lista de associações' })
+                    });
+            });
+        } catch (err) {
+            return res.status(400).send({ error: 'Erro ao retornar a lista de associações' })
+        }
+    }
 }
