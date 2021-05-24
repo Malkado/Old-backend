@@ -31,6 +31,6 @@ module.exports = {
         } catch (err) {
             return res.status(400).send({ error: 'Erro ao retornar endereço' })
         }
-    },
+    }
 
 }
