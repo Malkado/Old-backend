@@ -139,7 +139,7 @@ module.exports = {
                     const numero = Math.floor(Math.random() * 9);
                     sequenceCode = sequenceCode.length == 0 ? String(numero) : sequenceCode + numero;
                 }
-                // const encrypt_code = await crypto.createHash('md5').update(sequenceCode).digest("hex");
+                const encrypt_code = await crypto.createHash('md5').update(sequenceCode).digest("hex");;
 
                 /**
                  * Types:
