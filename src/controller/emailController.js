@@ -149,7 +149,7 @@ module.exports = {
                 const saveCode = await validationModel.create({
                     id_user: userId,
                     type: 2,
-                    code: encrypt_code
+                    code: sequenceCode
                 });
                 if (saveCode) {
                     const status = 200;
@@ -183,17 +183,17 @@ module.exports = {
                 const message = 'Conta já foi validada.';
                 return res.json(response.responseMensage([], message, status));
             } else {
-
-                if (code != findUserCode.code) {
+                console.log(findUserCode, code);
+                if (code !== findUserCode[0].code) {
                     const status = 400;
                     const message = 'Código inválido';
                     return res.json(response.responseMensage([], message, status));
 
                 } else {
                     try {
-                        const updatingCode = await validationModel.updateOne({ id_user: userId }, { status: true });
+                        console.log({ id_user: userId });
+                        const updatingCode = await validationModel.updateOne({ "id_user": userId }, { status: true });
                         if (!updatingCode) {
-
                             const status = 500;
                             const message = 'Erro interno da função.';
                             return res.json(response.responseMensage([], message, status));

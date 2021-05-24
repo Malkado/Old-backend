@@ -12,8 +12,7 @@ const validationAccontSchema = new mongoose.Schema({
     },
     code: {
         type: String,
-        require: true,
-        lowercase: true
+        require: true
     },
     status: {
         type: Boolean,

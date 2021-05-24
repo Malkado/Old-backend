@@ -40,6 +40,8 @@ router.get('/returnAccountDonation/:id', authMiddleware, accountController.getAc
 router.post('/registerAddress', addressController.registerAddress);
 router.get('/getAddressByIdAndType/:id/:type', authMiddleware, addressController.getAddressByIdAndType);
 router.get('/removeAddress/:id/:type', authMiddleware, addressController.removeAddress);
+router.put('/updateAdderss', authMiddleware, addressController.updateUserAddress);
+
 
 //Postagem 
 router.post('/createPost', authMiddleware, postController.createPost);
@@ -47,7 +49,7 @@ router.post('/posts', authMiddleware, postController.listPost);
 router.post('/favoriteAssociation', authMiddleware, favoriteAssociationController.favoriteAssociations);
 router.delete('/disfavoriteAssociations/:id_association', authMiddleware, favoriteAssociationController.disfavoriteAssociations);
 router.get('/returnFavoriteAssociations/:id_user', authMiddleware, favoriteAssociationController.returnFavoriteAssociations);
-
+router.post('/removePost', authMiddleware, postController.removePost);
 
 
 module.exports = router;
