@@ -34,6 +34,26 @@ module.exports = {
         }
     },
 
+    async removeAddress(req, res) {
+        try {
+            let addressRemove;
+            const id_user = req.params.id;
+            const type_user = req.params.type;
+            await Address.find({ id_user: id_user, type_user: type_user }, function (err, docs) {
+                addressRemove = docs;
+            });
+            await Address.findOneAndDelete(addressRemove);
+            const status = 200;
+            const message = 'Endereço removido com Sucesso';
+            return res.json(response.responseMensage([], message, status));
+        } catch (err) {
+            const status = 400;
+            const message = 'Erro ao remover Endereço';
+            return res.json(response.responseMensage([], message, status));
+        }
+    },
+
+
     async updateUserAddress(req, res) {
         try {
             const { address_Id, street, city, state,

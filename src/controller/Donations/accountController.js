@@ -7,8 +7,9 @@ module.exports = {
     async registerAccount(req, res) {
         try {
             const { number_account } = req.body;
-            if (await Account.findOne({ number_account }))
+            if (await Account.findOne({ number_account })) {
                 return res.status(400).send({ error: 'Conta já cadastrada' });
+            }
             const account = await Account.create(req.body);
             account.sequence_id = undefined;
             return res.status(201).send({ message: 'Conta registrada com sucesso!' })

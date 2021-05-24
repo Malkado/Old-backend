@@ -8,6 +8,7 @@ const AddressSchema = new mongoose.Schema({
     id_user: {
         type: Number,
         require: true,
+        unique: true,
     },
     type_user: {
         type: Number,

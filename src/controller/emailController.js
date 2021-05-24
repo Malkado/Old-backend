@@ -1,7 +1,9 @@
 const nodemailer = require('nodemailer');
 const User = require('../models/AuthUser');
 const response = require('../helper/response-helper');
-const bcrypt = require('bcryptjs')
+const Person = require('../models/Register/PersonUser');
+const Association = require('../models/Register/AssociationUser');
+
 
 const crypto = require('crypto');
 
@@ -17,15 +19,22 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+var type = {
+    password: 'password',
+    email: 'email'
+};
 
 
 module.exports = {
     async sendConfirmEmail(req, res) {
         const { userId } = req;
+        let firstName;
         try {
             const resultFindUserByEmail = await User.findById(userId);
-            const { email } = resultFindUserByEmail;
+            const { email, type_user, id_user } = resultFindUserByEmail;
 
+            const user = type_user === 0 ? await Person.find({ sequence_id: id_user }) : await Association.find({ sequence_id: id_user });
+            firstName = type_user === 0 ? user[0].firstName : user[0].fantasy_name;
             const code = await validationModel.find({
                 id_user: userId,
                 status: false
@@ -34,7 +43,7 @@ module.exports = {
                 const validationCode = code.code;
                 const status = 200;
                 const message = 'Código Enviado novamente. Verifique a caixa de span.';
-                sendEmail(email, validationCode, message, status, res);
+                sendEmail(email, validationCode, message, status, res, type.email);
             } else {
                 let sequenceCode = '';
                 while (sequenceCode.length < 6) {
@@ -55,8 +64,7 @@ module.exports = {
                 if (saveCode) {
                     const status = 200;
                     const message = 'Código Enviado com sucesso.';
-                    console.log(sendEmail(email, saveCode.code, message, status, res));
-                    sendEmail(email, saveCode.code, message, status, res);
+                    sendEmail(email, saveCode.code, message, status, res, type.email);
                 } else {
                     const status = 403;
                     const message = 'Falha ao gerar o código.';
@@ -119,20 +127,22 @@ module.exports = {
     //Forgot Password
     async forgotPassword(req, res) {
         const { userId } = req;
-        console.log(userId);
+        let firstName;
         try {
             const resultFindUserByEmail = await User.findById(userId);
-            const { email } = resultFindUserByEmail;
+            const { email, type_user, id_user } = resultFindUserByEmail;
+            const user = type_user === 0 ? await Person.find({ sequence_id: id_user }) : await Association.find({ sequence_id: id_user });
+            firstName = type_user === 0 ? user[0].firstName : user[0].fantasy_name;
 
             const code = await validationModel.find({
                 id_user: userId,
                 status: false
             });
             if (code.length > 0) {
-                const validationCode = code.code;
+                const validationCode = code[0].code;
                 const status = 200;
                 const message = 'Código Enviado novamente. Verifique a caixa de span.';
-                sendEmail(email, validationCode, message, status, res);
+                sendEmail(email, validationCode, message, status, res, firstName, type.password);
             } else {
                 let sequenceCode = '';
                 while (sequenceCode.length < 6) {
@@ -154,7 +164,7 @@ module.exports = {
                 if (saveCode) {
                     const status = 200;
                     const message = 'Código Enviado com sucesso.';
-                    sendEmail(email, saveCode.code, message, status, res);
+                    sendEmail(email, saveCode.code, message, status, res, firstName, type.password);
                 } else {
                     const status = 403;
                     const message = 'Falha ao gerar o código.';
@@ -162,11 +172,16 @@ module.exports = {
                 }
             }
         } catch (error) {
+            console.error(error)
             const status = 500;
             const message = 'Erro interno da função. ';
             return res.json(response.responseMensage([], message, status));
         }
     },
+
+    /**
+     * Confirmar o código
+     */
     async confirmPassword(req, res) {
         const { userId } = req;
         const { password, code } = req.headers;
@@ -177,13 +192,12 @@ module.exports = {
                 status: false
             };
 
-            const findUserCode = validationModel.find(findCode);
-            if (!findUserCode) {
+            const findUserCode = await validationModel.find(findCode);
+            if (!findUserCode || findUserCode.length === 0) {
                 const status = 200;
                 const message = 'Conta já foi validada.';
                 return res.json(response.responseMensage([], message, status));
             } else {
-                console.log(findUserCode, code);
                 if (code !== findUserCode[0].code) {
                     const status = 400;
                     const message = 'Código inválido';
@@ -191,7 +205,6 @@ module.exports = {
 
                 } else {
                     try {
-                        console.log({ id_user: userId });
                         const updatingCode = await validationModel.updateOne({ "id_user": userId }, { status: true });
                         if (!updatingCode) {
                             const status = 500;
@@ -199,7 +212,8 @@ module.exports = {
                             return res.json(response.responseMensage([], message, status));
                         }
 
-                        const updatingUser = await User.updateOne({ id_user: userId }, { password: password });
+                        const updatingUser = await User.updateOne({ _id: userId }, { password: password });
+
                         if (!updatingUser) {
                             const status = 500;
                             const message = 'Erro ao tentar alterar senha.';
@@ -225,12 +239,14 @@ module.exports = {
 
 
 }
-function sendEmail(email, codigo, message, status, res) {
+function sendEmail(email, codigo, message, status, res, name, tipo) {
+    const text = tipo == type.password ? 'Sua nova senha temporária para acessar o aplicativo' : 'É um prazer te receber no nosso aplicativo, insira o código abaixo para confirmar o seu email'
+    const imagem = 'https://firebasestorage.googleapis.com/v0/b/elderlycare-7fea8.appspot.com/o/care_logo.png?alt=media&token=1608cd3f-9dcb-4926-bc1a-f29673e60d3d'
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
         subject: 'Código de confirmação!',
-        text: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
            <head>
               <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -242,7 +258,7 @@ function sendEmail(email, codigo, message, status, res) {
               <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="margin-top: 30px;border: 1px solid #cccccc;">
                  <tr>
                     <td align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0;" >
-                       <img src="../Desktop/care_logo.png" alt="Criando Mágica de E-mail" width="150" height="100" style="display: block;" />
+                       <img src="${imagem}" alt="Criando Mágica de E-mail" width="150" height="100" style="display: block;" />
                     </td>
                  </tr>
                  <tr>
@@ -256,9 +272,9 @@ function sendEmail(email, codigo, message, status, res) {
                           <tr>
                              <td style="padding: 20px 0 10px 0;" style="color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;"
                                 >
-                                <p>Olá,</p>
-                                <p>É um prazer te receber no nosso aplicativo, insira o código abaixo para confirmar o seu email:</p>
-                             <p style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;text-align: center">101010</p>
+                                <p>Olá, ${name}</p>
+                                <p style="margin:0 auto">${text}:</p>
+                             <p style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;text-align: center">${codigo}</p>
                              </td>
                           </tr>
                        </table>
@@ -288,56 +304,4 @@ function sendEmail(email, codigo, message, status, res) {
             return res.json(response.responseMensage([], message, status));
         }
     });
-}
-function getEmail(codigo) {
-    const email_template_teste = `
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-   <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <title>Email de confirmação de email - Elderlycare</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-   </head>
-   <body style="margin: 0; padding: 0;">
-
-      <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="margin-top: 30px;border: 1px solid #cccccc;">
-         <tr>
-            <td align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0;" >
-               <img src="../Desktop/care_logo.png" alt="Criando Mágica de E-mail" width="150" height="100" style="display: block;" />
-			</td>
-         </tr>
-         <tr>
-            <td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
-               <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                  <tr>
-                     <td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;text-align: center">
-                        <b>CÓDIGO DE ACESSO</b>
-                     </td>
-                  </tr>
-                  <tr>
-                     <td style="padding: 20px 0 10px 0;" style="color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;"
-                        >
-                        <p>Olá,</p>
-						<p>É um prazer te receber no nosso aplicativo, insira o código abaixo para confirmar o seu email:</p>
-					 <p style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;text-align: center">101010</p>
-					 </td>
-                  </tr>
-			   </table>
-            </td>
-         </tr>
-         <tr>
-            <td bgcolor="#70bbd9" style="padding: 30px 30px 30px 30px;text-align: center;">
-               <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                  <tr>
-                     <td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;">
-                        &reg;  All Rights Reserved
-                     </td>
-                  </tr>
-               </table>
-            </td>
-         </tr>
-      </table>
-   </body>
-</html>`
-    return email_template_teste;
 }
