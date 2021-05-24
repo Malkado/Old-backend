@@ -30,7 +30,7 @@ module.exports = {
         const body = {
             'association_sequence_id': association[0].sequence_id,
             'association_name': association[0].fantasy_name,
-            'description': association[0].fantasy_name,
+            'description': description,
             'image': img
         };
 
@@ -46,6 +46,7 @@ module.exports = {
         const message = 'Função executada com sucesso.';
         return res.json(response.responseMensage([], message, status));
     },
+
     async listPost(req, res) {
         const { userId } = req;
         const { lastId } = req.body;
@@ -67,6 +68,5 @@ module.exports = {
         const status = 200;
         const message = 'Função executada com sucesso.';
         return res.json(response.responseMensage(listPost, message, status));
-
     }
 }

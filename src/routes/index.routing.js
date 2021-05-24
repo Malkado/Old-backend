@@ -16,17 +16,19 @@ router.get("/", function (req, res) {
 //Email
 router.get('/sendConfirmEmail', authMiddleware, emailController.sendConfirmEmail);
 router.get('/confirmEmail', authMiddleware, emailController.confirmEmail);
+
 //Forgot Password
 router.get('/forgotPassword', authMiddleware, emailController.forgotPassword);
 router.get('/confirmPassword', authMiddleware, emailController.confirmPassword);
+
 //Auth
 router.post('/register', authController.register);
 router.post('/authenticate', authController.authenticate);
+router.post('/removeRegister/:id/:type', authController.removeRegister);
 
 //Register User/Association
 router.post('/registerPerson', registerController.registerPerson);
 router.post('/registerAssociation', registerController.registerAssociation);
-
 
 //Donations
 router.post('/registerPixDonation', authMiddleware, pixController.registerPix);
@@ -37,7 +39,7 @@ router.get('/returnAccountDonation/:id', authMiddleware, accountController.getAc
 //Address
 router.post('/registerAddress', addressController.registerAddress);
 router.get('/getAddressByIdAndType/:id/:type', authMiddleware, addressController.getAddressByIdAndType);
-
+router.get('/removeAddress/:id/:type', authMiddleware, addressController.removeAddress);
 
 //Postagem 
 router.post('/createPost', authMiddleware, postController.createPost);
@@ -45,6 +47,7 @@ router.post('/posts', authMiddleware, postController.listPost);
 router.post('/favoriteAssociation', authMiddleware, favoriteAssociationController.favoriteAssociations);
 router.delete('/disfavoriteAssociations/:id_association', authMiddleware, favoriteAssociationController.disfavoriteAssociations);
 router.get('/returnFavoriteAssociations/:id_user', authMiddleware, favoriteAssociationController.returnFavoriteAssociations);
+
 
 
 module.exports = router;

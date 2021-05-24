@@ -20,7 +20,7 @@ module.exports = {
     async disfavoriteAssociations(req, res) {
         try {
             const favoriteAssociation = await FavoriteAssociation.findOneAndDelete(req.params.id_association);
-            const status = 201;
+            const status = 200;
             const message = 'Associação desfavoritada com Sucesso';
             return res.json(response.responseMensage([], message, status));
         } catch (err) {

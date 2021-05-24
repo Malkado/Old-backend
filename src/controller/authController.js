@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const authConfig = require('../config/auth.json');
 const User = require('../models/AuthUser');
 const router = express.Router();
+const response = require('../helper/response-helper');
 
 // Função que gerencia a criação dos tokens aledatorios
 function generateToken(params = {}) {
@@ -47,5 +48,24 @@ module.exports = {
             user,
             token: generateToken({ id: user.id }),
         });
-    }
+    },
+
+    async removeRegister(req, res) {
+        try {
+            let userRemove;
+            const id_user = req.params.id;
+            const type_user = req.params.type;
+            await User.find({ id_user: id_user, type_user: type_user }, function (err, docs) {
+                userRemove = docs;
+            });
+            await User.findOneAndDelete(userRemove);
+            const status = 200;
+            const message = 'Usuário removido com Sucesso';
+            return res.json(response.responseMensage([], message, status));
+        } catch (err) {
+            const status = 400;
+            const message = 'Erro ao remover Usuário';
+            return res.json(response.responseMensage([], message, status));
+        }
+    },
 }

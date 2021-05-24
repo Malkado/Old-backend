@@ -28,7 +28,29 @@ module.exports = {
             const message = 'Associação adicionada com sucesso!';
             return res.json(response.responseMensage([{ id_user: lastId }], message, status));
         } catch (err) {
-            return res.status(400).send({ error: 'Erro no registrado da associação!' })
+            return res.status(400).send({ error: 'Erro no registrado da Associação!' })
+        }
+    },
+
+    async removeAccountPerson(req, res) {
+        try {
+            const person = await Person.findOneAndDelete(req.params.id);
+            const status = 200;
+            const message = 'Usuário removido com Sucesso';
+            return res.json(response.responseMensage([], message, status));
+        } catch (err) {
+            return res.status(400).send({ error: 'Erro ao remover usuário' })
+        }
+    },
+
+    async removeAccountAssociation(req, res) {
+        try {
+            const association = await Association.findOneAndDelete(req.params.id);
+            const status = 200;
+            const message = 'Associação removido com Sucesso';
+            return res.json(response.responseMensage([], message, status));
+        } catch (err) {
+            return res.status(400).send({ error: 'Erro ao remover Associação' })
         }
     },
 }
