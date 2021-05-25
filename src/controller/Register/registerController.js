@@ -76,5 +76,86 @@ module.exports = {
         } catch (err) {
             return res.status(400).send({ error: 'Erro ao retornar a lista de associações' })
         }
+    },
+    // sequence_id: {
+    //     type: Number,
+    //     require: true,
+    // },
+    // fantasy_name: {
+    //     type: String,
+    //     require: true,
+    //     min: 1,
+    // },
+    // CNPJ: {
+    //     type: String,
+    //     require: true,
+    //     unique: true,
+    //     min: 11,
+    //     max: 14,
+    // },
+    // phone_1: {
+    //     type: String,
+    //     require: true,
+    // },
+    // phone_2: {
+    //     type: String,
+    //     require: true,
+    // }
+
+    async updateAccountAssociation(req, res) {
+        const { userId } = req;
+
+        const { id, fantasy_name, cnpj, phone_1, phone_2 } = req.body;
+        try {
+            if ((!id || !fantasy_name || !cnpj || !phone_1)) {
+                const status = 400;
+                const message = 'Parâmetros inválidos.';
+                return res.json(response.responseMensage([], message, status));
+            }
+            const user = await AuthModel.findById(userId);
+            if (!user) {
+                const status = 404;
+                const message = 'Usuário não encontrado.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const findAssociation = await Association.find().where({ sequence_id: id });
+            if (!findAssociation || findAssociation.length == 0) {
+                const status = 404;
+                const message = 'Associação não encontrada.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            let body;
+            if (phone_2) {
+                body = {
+                    'sequence_id': id,
+                    'fantasy_name': fantasy_name,
+                    'CNPJ': cnpj,
+                    'phone_1': phone_1,
+                    'phone_2': phone_2
+                };
+
+            } else {
+                body = {
+                    'sequence_id': id,
+                    'fantasy_name': fantasy_name,
+                    'CNPJ': cnpj,
+                    'phone_1': phone_1
+                };
+            }
+
+        } catch (error) {
+            const status = 500;
+            const message = 'Erro interno da função.';
+            return res.json(response.responseMensage([], message, status));
+        }
+
+    },
+
+    async updateAccountPerson(req, res) {
+
     }
+
+
 }
