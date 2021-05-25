@@ -32,6 +32,8 @@ router.post('/registerAssociation', registerController.registerAssociation);
 router.get('/findAssociationByState/:state', registerController.findAssociationByState);
 router.get('/findUserById/:id', registerController.findUserById);
 router.get('/findAssociationById/:id', registerController.findAssociationById);
+router.put('/updateAssociation', authMiddleware, registerController.updateAccountAssociation);
+router.put('/updatePerson', authMiddleware, registerController.updateAccountPerson);
 
 //Donations
 router.post('/registerPixDonation', authMiddleware, pixController.registerPix);

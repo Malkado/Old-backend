@@ -4,7 +4,8 @@ const Association = require('../../models/Register/AssociationUser');
 const response = require('../../helper/response-helper');
 const router = express.Router();
 const Address = require('../../models/Address/Address');
-
+const AuthModel = require('../../models/AuthUser');
+const AssiciationPost = require('../../models/Posts/AssiciationPost');
 module.exports = {
 
     async registerPerson(req, res) {
@@ -114,7 +115,118 @@ module.exports = {
         } catch (err) {
             return res.status(400).send({ error: 'Erro ao retornar usuario' })
         }
+    },
+
+
+    async updateAccountAssociation(req, res) {
+        const { userId } = req;
+        const { id, fantasy_name, cnpj, phone_1, phone_2, image } = req.body;
+        try {
+            if (!id || !fantasy_name || !cnpj || !phone_1) {
+                const status = 400;
+                const message = 'Parâmetros inválidos.';
+                return res.json(response.responseMensage([], message, status));
+            }
+            const user = await AuthModel.findById(userId);
+            if (!user) {
+                const status = 404;
+                const message = 'Usuário não encontrado.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const findAssociation = await Association.find().where({ sequence_id: id });
+            if (!findAssociation || findAssociation.length == 0) {
+                const status = 404;
+                const message = 'Associação não encontrada.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const body = {
+                'fantasy_name': fantasy_name,
+                'CNPJ': cnpj,
+                'phone_1': phone_1
+            };
+            phone_2 ? body['phone_2'] = phone_2 : null;
+            image ? body['image'] = image : null;
+
+            const update_Association = await Association.updateOne({ sequence_id: id });
+            if (!update_Association) {
+                const status = 500;
+                const message = 'Falha ao atualizar os dados.';
+                return res.json(response.responseMensage([], message, status));
+            }
+            const update_publications = await AssiciationPost.updateMany({ association_sequence_id: id }, { association_name: fantasy_name });
+            if (!update_publications) {
+                const status = 500;
+                const message = 'Falha ao atualizar as publicações.';
+                return res.json(response.responseMensage([], message, status));
+            }
+            const status = 200;
+            const message = 'Função executada com sucesso.';
+            return res.json(response.responseMensage([], message, status));
+        } catch (error) {
+            console.error(error)
+            const status = 500;
+            const message = 'Erro interno da função.';
+            return res.json(response.responseMensage([], message, status));
+        }
+
+    },
+
+    async updateAccountPerson(req, res) {
+        const { userId } = req;
+        const { id, firstName, lastName, birthDate, cpf_cnpj, phone_1, phone_2, image } = req.body;
+        try {
+            if (!id || !firstName || !lastName || !birthDate || !cpf_cnpj || !phone_1) {
+                const status = 400;
+                const message = 'Parâmetros inválidos.';
+                return res.json(response.responseMensage([], message, status));
+            }
+            const user = await AuthModel.findById(userId);
+            if (!user) {
+                const status = 404;
+                const message = 'Usuário não encontrado.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const findUser = await Person.find().where({ sequence_id: id });
+            if (!findUser || findUser.length == 0) {
+                const status = 404;
+                const message = 'Usuário não encontrado.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const body = {
+                'firstName': firstName,
+                'lastName': lastName,
+                'birthDate': birthDate,
+                'CPF_CNPJ': cpf_cnpj,
+                'phone_1': phone_1
+            };
+            phone_2 ? body['phone_2'] = phone_2 : null;
+            image ? body['image'] = image : null;
+
+            const updatePerson = await Person.updateOne({ _id: findUser[0]['_id'] }, body);
+            if (!updatePerson) {
+                const status = 500;
+                const message = 'Falha ao atualizar os dados.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const status = 200;
+            const message = 'Função executada com sucesso.';
+            return res.json(response.responseMensage([], message, status));
+        } catch (error) {
+            console.error(error)
+            const status = 500;
+            const message = 'Erro interno da função.';
+            return res.json(response.responseMensage([], message, status));
+        }
+
     }
 
 
 }
+
+
+
