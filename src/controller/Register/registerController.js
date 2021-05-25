@@ -76,5 +76,45 @@ module.exports = {
         } catch (err) {
             return res.status(400).send({ error: 'Erro ao retornar a lista de associações' })
         }
+    },
+
+    async findUserById(req, res) {
+        try {
+            var user;
+            const id_user = req.params.id;
+            await Person.find({}, function (err, docs) {
+                docs.forEach(element => {
+                    if (element['sequence_id'] == id_user) {
+                        user = element;
+                    }
+                });
+                const status = 200;
+                const message = 'Dados do usuario';
+                return res.json(response.responseMensage([{ user: user }], message, status));
+            });
+        } catch (err) {
+            return res.status(400).send({ error: 'Erro ao retornar usuario' })
+        }
+    },
+
+    async findAssociationById(req, res) {
+        try {
+            var user;
+            const id_user = req.params.id;
+            await Association.find({}, function (err, docs) {
+                docs.forEach(element => {
+                    if (element['sequence_id'] == id_user) {
+                        user = element;
+                    }
+                });
+                const status = 200;
+                const message = 'Dados do usuario';
+                return res.json(response.responseMensage([{ user: user }], message, status));
+            });
+        } catch (err) {
+            return res.status(400).send({ error: 'Erro ao retornar usuario' })
+        }
     }
+
+
 }

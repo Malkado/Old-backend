@@ -53,7 +53,6 @@ module.exports = {
         }
     },
 
-
     async updateUserAddress(req, res) {
         try {
             const { address_Id, street, city, state,
