@@ -33,6 +33,9 @@ const PersonUserSchema = new mongoose.Schema({
     phone_2: {
         type: String,
         require: true,
+    },
+    image: {
+        type: String
     }
 });
 

@@ -29,7 +29,7 @@ router.post('/removeRegister/:id/:type', authController.removeRegister);
 //Register User/Association
 router.post('/registerPerson', registerController.registerPerson);
 router.post('/registerAssociation', registerController.registerAssociation);
-router.post('/findAssociationByState', registerController.findAssociationByState);
+router.get('/findAssociationByState/:state', registerController.findAssociationByState);
 router.put('/updateAssociation', authMiddleware, registerController.updateAccountAssociation);
 router.put('/updatePerson', authMiddleware, registerController.updateAccountPerson);
 

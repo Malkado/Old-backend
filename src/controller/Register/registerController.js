@@ -58,10 +58,10 @@ module.exports = {
     async findAssociationByState(req, res) {
         try {
             var arr = [];
-            const { state } = req.body;
+            const state = req.params.state;
             await Address.find({}, function (err, docs) {
                 docs.forEach(element => {
-                    if (element['state'] == state) {
+                    if (element['state'] == String(state)) {
                         arr.push(element['id_user']);
                     }
                 });
