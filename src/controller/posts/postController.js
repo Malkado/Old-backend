@@ -68,8 +68,7 @@ module.exports = {
                 const message = 'Usuário não encontrado.';
                 return res.json(response.responseMensage([], message, status));
             }
-            console.log(user);
-            const listPost = !lastId ? await associationPostModel.find({ association_sequence_id: user.id_user }).limit(5) : await associationPostModel.find({ association_sequence_id: user.id_user }).sort("sequence_id").skip(5).limit(5);
+            const listPost = !lastId ? await associationPostModel.find().where({ association_sequence_id: user.id_user }).limit(5) : await associationPostModel.find().where({ association_sequence_id: user.id_user }).sort("sequence_id").skip(5).limit(5);
             if (!listPost) {
                 const status = 500;
                 const message = 'Falha ao listar postagens.';
@@ -101,9 +100,7 @@ module.exports = {
                 const message = 'Usuário não encontrado.';
                 return res.json(response.responseMensage([], message, status));
             }
-
-            const removePostById = await Address.deleteOne({ sequence_id: id });
-            console.log(removePostById)
+            const removePostById = await associationPostModel.findOneAndDelete({ sequence_id: id });
             if (!removePostById) {
                 const status = 500;
                 const message = 'Falha ao remover a postagem.';
@@ -113,7 +110,6 @@ module.exports = {
             const message = 'Função executada com sucesso.';
             return res.json(response.responseMensage([], message, status));
         } catch (error) {
-            console.log(error);
             const status = 500;
             const message = 'Erro interno da função.';
             return res.json(response.responseMensage([], message, status));
