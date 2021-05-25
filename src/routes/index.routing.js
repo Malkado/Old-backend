@@ -32,8 +32,8 @@ router.post('/registerAssociation', registerController.registerAssociation);
 router.get('/findAssociationByState/:state', registerController.findAssociationByState);
 router.get('/findUserById/:id', registerController.findUserById);
 router.get('/findAssociationById/:id', registerController.findAssociationById);
-router.put('/updateAssociation', authMiddleware, registerController.updateAccountAssociation);
-router.put('/updatePerson', authMiddleware, registerController.updateAccountPerson);
+router.put('/updateAssociation', registerController.updateAccountAssociation);
+router.put('/updatePerson', registerController.updateAccountPerson);
 
 //Donations
 router.post('/registerPixDonation', authMiddleware, pixController.registerPix);
@@ -52,7 +52,7 @@ router.put('/updateAdderss', authMiddleware, addressController.updateUserAddress
 router.post('/createPost', authMiddleware, postController.createPost);
 router.post('/posts', authMiddleware, postController.listPost);
 router.post('/favoriteAssociation', authMiddleware, favoriteAssociationController.favoriteAssociations);
-router.delete('/disfavoriteAssociations/:id_association', authMiddleware, favoriteAssociationController.disfavoriteAssociations);
+router.delete('/desfavoriteAssociation/:id_association', favoriteAssociationController.desfavoriteAssociation);
 router.get('/returnFavoriteAssociations/:id_user', authMiddleware, favoriteAssociationController.returnFavoriteAssociations);
 router.post('/removePost', authMiddleware, postController.removePost);
 

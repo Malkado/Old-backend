@@ -17,9 +17,10 @@ module.exports = {
         }
     },
 
-    async disfavoriteAssociations(req, res) {
+    async desfavoriteAssociation(req, res) {
         try {
-            const favoriteAssociation = await FavoriteAssociation.findOneAndDelete(req.params.id_association);
+            const id_association = req.params.id_association;
+            const favoriteAssociation = await FavoriteAssociation.findOneAndDelete(id_association);
             const status = 200;
             const message = 'Associação desfavoritada com Sucesso';
             return res.json(response.responseMensage([], message, status));
