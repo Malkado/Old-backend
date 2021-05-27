@@ -3,7 +3,8 @@ const associationPostModel = require('../../models/Posts/AssiciationPost');
 const AuthModel = require('../../models/AuthUser');
 const response = require('../../helper/response-helper');
 const Address = require('../../models/Address/Address');
-
+const favoriteAssociation = require('../../models/favoriteAssociations');
+const AssociationUser = require('../../models/Register/AssociationUser');
 module.exports = {
 
     async createPost(req, res) {
@@ -68,7 +69,24 @@ module.exports = {
                 const message = 'Usuário não encontrado.';
                 return res.json(response.responseMensage([], message, status));
             }
-            const listPost = !lastId ? await associationPostModel.find().where({ association_sequence_id: user.id_user }).limit(5) : await associationPostModel.find().where({ association_sequence_id: user.id_user }).sort("sequence_id").skip(5).limit(5);
+
+            const associationsUser = await favoriteAssociation.find().where({ id_user: user.id_user });
+            console.log(associationsUser);
+            if (!associationsUser) {
+                const status = 500;
+                const message = 'Falha ao listar associações do usuário.';
+                return res.json(response.responseMensage([], message, status));
+            }
+            const associationsId = associationsUser.map(value => {
+                return value.id_association;
+            });
+            console.log(associationsId);
+
+            const listAssociationsIds = associationsId.filter(function (elem, index, self) {
+                return index === self.indexOf(elem);
+            });
+            const listPost = !lastId ? await associationPostModel.find({ association_sequence_id: listAssociationsIds }).limit(5) : await associationPostModel.find({ association_sequence_id: listAssociationsIds }).sort("sequence_id").skip(5).limit(5);
+
             if (!listPost) {
                 const status = 500;
                 const message = 'Falha ao listar postagens.';
