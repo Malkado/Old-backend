@@ -59,7 +59,6 @@ module.exports = {
 
     async listPost(req, res) {
         const { userId } = req;
-        const { lastId } = req.body;
 
         try {
 
@@ -85,7 +84,7 @@ module.exports = {
             const listAssociationsIds = associationsId.filter(function (elem, index, self) {
                 return index === self.indexOf(elem);
             });
-            const listPost = !lastId ? await associationPostModel.find({ association_sequence_id: listAssociationsIds }).limit(5) : await associationPostModel.find({ association_sequence_id: listAssociationsIds }).sort("sequence_id").skip(5).limit(5);
+            const listPost = await associationPostModel.find({ association_sequence_id: listAssociationsIds });
 
             if (!listPost) {
                 const status = 500;
@@ -96,6 +95,7 @@ module.exports = {
             const message = 'Função executada com sucesso.';
             return res.json(response.responseMensage(listPost, message, status));
         } catch (error) {
+            console.log(error)
             const status = 500;
             const message = 'Erro interno da função.';
             return res.json(response.responseMensage([], message, status));
