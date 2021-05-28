@@ -4,17 +4,6 @@ const response = require('../../helper/response-helper');
 
 module.exports = {
 
-    // async registerAddress(req, res) {
-    //     try {
-    //         const address = await Address.create(req.body);
-    //         address.sequence_id = undefined;
-
-    //         return res.status(201).send({ message: 'Endereço registrado com sucesso!' })
-    //     } catch (err) {
-    //         return res.status(400).send({ error: 'Erro no registro do endereço!' })
-    //     }
-    // },
-
     async registerAddress(req, res) {
         try {
             const {
@@ -34,13 +23,6 @@ module.exports = {
                 const message = 'Parâmetros inválidos.';
                 return res.json(response.responseMensage([], message, status));
             }
-            // const checkUser = await AuthUser.findById(userId);
-            // if (!checkUser) {
-            //     const status = 404;
-            //     const message = 'Usuário não encontrado.';
-            //     return res.json(response.responseMensage([], message, status));
-            // }
-
 
             const body = {
                 "type_user": type_user,
@@ -54,7 +36,6 @@ module.exports = {
                 "country": country
             };
             const createAddress = await Address.create(body);
-            // const getAddress = await Address.findOneAndUpdate({ sequence_id: address_Id }, bodyupdate);
             if (!createAddress) {
                 const status = 500;
                 const message = 'Erro ao tentar atualizar.';

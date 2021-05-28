@@ -13,19 +13,51 @@ function generateToken(params = {}) {
     });
 };
 module.exports = {
+
     async register(req, res) {
-        const { email } = req.body;
         try {
-            if (await User.findOne({ email }))
-                return res.status(400).send({ error: 'User already exist' });
-            const user = await User.create(req.body);
-            user.password = undefined;
-            return res.send({
-                user,
-                token: generateToken({ id: user.id }),
-            });
-        } catch (err) {
-            return res.status(400).send({ error: 'Registration Failed' })
+            const {
+                email,
+                password
+            } = req.body;
+
+            if (!email, !password) {
+                const status = 400;
+                const message = 'Parâmetros inválidos.';
+                return res.json(response.responseMensage([], message, status));
+            }
+            const findemail = await User.findOne({ email })
+            if (findemail) {
+                const status = 403;
+                const message = 'User already exist';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const body = {
+                "email": email,
+                "password": password
+            };
+
+            const createUser = await User.create(body);
+            createUser.password = undefined;
+            if (!createUser) {
+                const status = 500;
+                const message = 'Erro ao tentar atualizar.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const returnOptions = {
+                createUser,
+                token: generateToken({ id: createUser.id }),
+            };
+
+            const status = 200;
+            const message = 'Função executada com sucesso.';
+            return res.json(response.responseMensage([returnOptions], message, status));
+        } catch (e) {
+            const status = 500;
+            const message = 'Erro interno da função.';
+            return res.json(response.responseMensage([], message, status));
         }
     },
 
@@ -55,7 +87,7 @@ module.exports = {
             let userRemove;
             const id_user = req.params.id;
             const type_user = req.params.type;
-            await User.find({ id_user: id_user, type_user: type_user }, function (err, docs) {
+            await User.find({ id_user: id_user, type_user: type_user }, function(err, docs) {
                 userRemove = docs;
             });
             await User.findOneAndDelete(userRemove);

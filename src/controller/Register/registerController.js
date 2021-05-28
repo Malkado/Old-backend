@@ -60,7 +60,7 @@ module.exports = {
         try {
             var arr = [];
             const state = req.params.state;
-            await Address.find({}, function (err, docs) {
+            await Address.find({}, function(err, docs) {
                 docs.forEach(element => {
                     if (element['state'] == String(state)) {
                         arr.push(element['id_user']);
@@ -83,7 +83,7 @@ module.exports = {
         try {
             var user;
             const id_user = req.params.id;
-            await Person.find({}, function (err, docs) {
+            await Person.find({}, function(err, docs) {
                 docs.forEach(element => {
                     if (element['sequence_id'] == id_user) {
                         user = element;
@@ -102,7 +102,7 @@ module.exports = {
         try {
             var user;
             const id_user = req.params.id;
-            await Association.find({}, function (err, docs) {
+            await Association.find({}, function(err, docs) {
                 docs.forEach(element => {
                     if (element['sequence_id'] == id_user) {
                         user = element;
@@ -116,7 +116,6 @@ module.exports = {
             return res.status(400).send({ error: 'Erro ao retornar usuario' })
         }
     },
-
 
     async updateAccountAssociation(req, res) {
         const { userId } = req;
@@ -225,8 +224,4 @@ module.exports = {
 
     }
 
-
 }
-
-
-
