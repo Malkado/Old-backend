@@ -37,7 +37,9 @@ module.exports = {
 
             const body = {
                 "email": email,
-                "password": password
+                "password": password,
+                "id_user": id_user,
+                "type_user": type_user
             };
 
             const createUser = await User.create(body);
