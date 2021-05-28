@@ -18,10 +18,12 @@ module.exports = {
         try {
             const {
                 email,
-                password
+                password,
+                id_user,
+                type_user
             } = req.body;
 
-            if (!email, !password) {
+            if (!email, !password, !id_user, !type_user) {
                 const status = 400;
                 const message = 'Parâmetros inválidos.';
                 return res.json(response.responseMensage([], message, status));
