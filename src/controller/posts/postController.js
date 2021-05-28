@@ -81,7 +81,7 @@ module.exports = {
             });
             console.log(associationsId);
 
-            const listAssociationsIds = associationsId.filter(function (elem, index, self) {
+            const listAssociationsIds = associationsId.filter(function(elem, index, self) {
                 return index === self.indexOf(elem);
             });
             const listPost = await associationPostModel.find({ association_sequence_id: listAssociationsIds });
@@ -94,6 +94,74 @@ module.exports = {
             const status = 200;
             const message = 'Função executada com sucesso.';
             return res.json(response.responseMensage(listPost, message, status));
+        } catch (error) {
+            console.log(error)
+            const status = 500;
+            const message = 'Erro interno da função.';
+            return res.json(response.responseMensage([], message, status));
+        }
+    },
+
+    async listPostByAssociation(req, res) {
+        const { userId } = req;
+        const id = req.params.id;
+        try {
+            const user = await AuthModel.findById(userId);
+            if (!user) {
+                const status = 404;
+                const message = 'Usuário não encontrado.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const associationsUser = await favoriteAssociation.find().where({ id_user: user.id_user });
+            if (!associationsUser) {
+                const status = 500;
+                const message = 'Falha ao listar associações do usuário.';
+                return res.json(response.responseMensage([], message, status));
+            }
+            const associationsId = associationsUser.map(value => {
+                return value.id_association;
+            });
+
+            const listPost = await associationPostModel.find({ association_sequence_id: id });
+
+            if (!listPost) {
+                const status = 500;
+                const message = 'Falha ao listar postagens.';
+                return res.json(response.responseMensage([], message, status));
+            }
+            const status = 200;
+            const message = 'Função executada com sucesso.';
+            return res.json(response.responseMensage(listPost, message, status));
+        } catch (error) {
+            console.log(error)
+            const status = 500;
+            const message = 'Erro interno da função.';
+            return res.json(response.responseMensage([], message, status));
+        }
+    },
+
+    async listPostById(req, res) {
+        const { userId } = req;
+        const id = req.params.id;
+        try {
+            const user = await AuthModel.findById(userId);
+            if (!user) {
+                const status = 404;
+                const message = 'Usuário não encontrado.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const listPostById = await associationPostModel.findById({ _id: id });
+            if (!listPostById) {
+                const status = 500;
+                const message = 'Falha ao listar postagem.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const status = 200;
+            const message = 'Função executada com sucesso.';
+            return res.json(response.responseMensage(listPostById, message, status));
         } catch (error) {
             console.log(error)
             const status = 500;

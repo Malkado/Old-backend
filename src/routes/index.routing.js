@@ -56,6 +56,8 @@ router.put('/updateAdderss', authMiddleware, addressController.updateUserAddress
 //Postagem 
 router.post('/createPost', authMiddleware, postController.createPost);
 router.get('/posts', authMiddleware, postController.listPost);
+router.get('/listPostByAssociation/:id', authMiddleware, postController.listPostByAssociation);
+router.get('/listPostById/:id', authMiddleware, postController.listPostById);
 router.post('/favoriteAssociation', authMiddleware, favoriteAssociationController.favoriteAssociations);
 router.delete('/desfavoriteAssociation/:id_association', favoriteAssociationController.desfavoriteAssociation);
 router.get('/returnFavoriteAssociations/:id_user', authMiddleware, favoriteAssociationController.returnFavoriteAssociations);
