@@ -1,7 +1,7 @@
 const mongoose = require('../../../database/database');
 
 const AccountSchema = new mongoose.Schema({
-    sequence_id: {
+    account_id: {
         type: Number,
     },
     user_id: {
@@ -33,7 +33,7 @@ const AccountSchema = new mongoose.Schema({
 // Irá criar o valor de id sequencial
 AccountSchema.pre('save', async function (next) {
     const allSize = await AccountDonation.count() + 1;
-    this.sequence_id = allSize;
+    this.account_id = allSize;
     next();
 });
 

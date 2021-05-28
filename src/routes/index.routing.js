@@ -9,7 +9,7 @@ const postController = require('../controller/posts/postController');
 const pixController = require('../controller/Donations/pixController');
 const accountController = require('../controller/Donations/accountController');
 const favoriteAssociationController = require('../controller/favoriteAssociationController');
-router.get("/", function (req, res) {
+router.get("/", function(req, res) {
     res.json({ message: 'server is running!' });
 });
 
@@ -38,8 +38,13 @@ router.put('/updatePerson', registerController.updateAccountPerson);
 //Donations
 router.post('/registerPixDonation', authMiddleware, pixController.registerPix);
 router.get('/returnPixDonation/:id', authMiddleware, pixController.getPixKeys);
+router.put('/updatePixDonation', authMiddleware, pixController.updatePixKeys);
 router.post('/registerAccountDonation', authMiddleware, accountController.registerAccount);
 router.get('/returnAccountDonation/:id', authMiddleware, accountController.getAccounts);
+router.get('/returnAccountDonationById/:id', authMiddleware, accountController.getAccountById);
+router.put('/updateAccountDonation', authMiddleware, accountController.updateAccount);
+router.delete('/removeAccount', authMiddleware, accountController.removeAccount);
+
 
 //Address
 router.post('/registerAddress', addressController.registerAddress);
