@@ -15,19 +15,10 @@ function generateToken(params = {}) {
 module.exports = {
 
     async register(req, res) {
-        try {
-            const {
-                email,
-                password,
-                id_user,
-                type_user
-            } = req.body;
 
-            if (!email, !password, !id_user, !type_user) {
-                const status = 400;
-                const message = 'Parâmetros inválidos.';
-                return res.json(response.responseMensage([], message, status));
-            }
+        const { email, password, id_user, type_user } = req.body;
+        try {
+
             const findemail = await User.findOne({ email })
             if (findemail) {
                 const status = 403;
@@ -91,7 +82,7 @@ module.exports = {
             let userRemove;
             const id_user = req.params.id;
             const type_user = req.params.type;
-            await User.find({ id_user: id_user, type_user: type_user }, function(err, docs) {
+            await User.find({ id_user: id_user, type_user: type_user }, function (err, docs) {
                 userRemove = docs;
             });
             await User.findOneAndDelete(userRemove);

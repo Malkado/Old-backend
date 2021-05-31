@@ -2,30 +2,80 @@ const express = require('express');
 const FavoriteAssociation = require('../models/favoriteAssociations');
 const response = require('../helper/response-helper');
 const Association = require('../models/Register/AssociationUser');
-const router = express.Router();
+const AuthModel = require('../models/AuthUser');
 
 module.exports = {
 
     async favoriteAssociations(req, res) {
+        const { userId } = req;
+        const { id_user, id_association } = req.body;
         try {
-            const favoriteAssociation = await FavoriteAssociation.create(req.body);
+            if ((!id_user || !id_association)) {
+                const status = 400;
+                const message = 'Parâmetros inválidos.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const user = await AuthModel.findById(userId);
+            if (!user) {
+                const status = 404;
+                const message = 'Usuário não encontrado.';
+                return res.json(response.responseMensage([], message, status));
+            }
+            const body = {
+                id_user: id_user,
+                id_association: id_association
+            };
+            const favoriteAssociation = await FavoriteAssociation.create(body);
+
+            if (!favoriteAssociation) {
+                const status = 403;
+                const message = 'Falha ao favoritar a Associação';
+                return res.json(response.responseMensage([], message, status));
+            }
+
             const status = 201;
-            const message = 'Associação favoritada com Sucesso';
+            const message = 'Função executada com sucesso.';
             return res.json(response.responseMensage([], message, status));
-        } catch (err) {
-            return res.status(400).send({ error: 'Erro ao favoritar associação' })
+        } catch (error) {
+            const status = 500;
+            const message = 'Erro interno da função.';
+            return res.json(response.responseMensage([], message, status));
         }
     },
 
     async desfavoriteAssociation(req, res) {
+      
+        const { userId } = req;
+        const { id_association } = req.params.id_association;
         try {
-            const id_association = req.params.id_association;
+            if ((!id_association)) {
+                const status = 400;
+                const message = 'Parâmetros inválidos.';
+                return res.json(response.responseMensage([], message, status));
+            }
+
+            const user = await AuthModel.findById(userId);
+            if (!user) {
+                const status = 404;
+                const message = 'Usuário não encontrado.';
+                return res.json(response.responseMensage([], message, status));
+            }
             const favoriteAssociation = await FavoriteAssociation.findOneAndDelete(id_association);
+
+            if (!favoriteAssociation) {
+                const status = 403;
+                const message = 'Falha ao desfavoritar a Associação';
+                return res.json(response.responseMensage([], message, status));
+            }
+
             const status = 200;
-            const message = 'Associação desfavoritada com Sucesso';
+            const message = 'Função executada com sucesso.';
             return res.json(response.responseMensage([], message, status));
-        } catch (err) {
-            return res.status(400).send({ error: 'Erro ao desfavoritar associação' })
+        } catch (error) {
+            const status = 500;
+            const message = 'Erro interno da função.';
+            return res.json(response.responseMensage([], message, status));
         }
     },
 
